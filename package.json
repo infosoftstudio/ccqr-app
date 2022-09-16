@@ -37,9 +37,11 @@
     "category-general"
   ],
   "dependencies": {
+    "@nativescript-community/ui-material-cardview": "^7.0.26",
     "@nativescript/core": "~8.3.4",
     "@nativescript/theme": "~3.0.1",
     "axios": "^0.24.0",
+    "lodash": "^4.17.21",
     "nativescript-vue": "~2.9.0",
     "nativescript-vue-navigator": "^1.2.0",
     "semver": "^7.3.7",
