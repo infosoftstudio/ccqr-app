@@ -37,16 +37,15 @@
     "category-general"
   ],
   "dependencies": {
-    "@nativescript/core": "~8.3.4",
+    "@nativescript/core": "~8.1.1",
     "@nativescript/theme": "~3.0.1",
     "axios": "^0.24.0",
     "nativescript-vue": "~2.9.0",
     "nativescript-vue-navigator": "^1.2.0",
-    "semver": "^7.3.7",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
-    "@nativescript/android": "~8.3.1",
+    "@nativescript/android": "8.1.1",
     "@nativescript/webpack": "~5.0.0",
     "nativescript-vue-template-compiler": "~2.9.0",
     "webpack-cli": "^4.9.1"
