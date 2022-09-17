@@ -1,5 +1,5 @@
 <template>
-  <Navigator :defaultRoute="isLoggedIn ? '/home' : '/login'"/>
+  <Navigator :defaultRoute="isLoggedIn ? '/dashboard' : '/login'"/>
 </template>
 <script>
 	import {getString, setString} from "@nativescript/core/application-settings"

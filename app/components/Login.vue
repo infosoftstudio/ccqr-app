@@ -27,8 +27,8 @@
 <script>
 // const connectivity = require("connectivity")
 // import appversion from 'nativescript-appversion'
-// import Dashboard from './stablishments/Dashboard'
-// import Globals from '../mixins/globals'
+import Dashboard from './stablishments/Dashboard'
+import Globals from '../mixins/globals'
 import { getAllKeys, getString, setString } from "@nativescript/core/application-settings";
 import { mapActions, mapMutations, mapGetters } from 'vuex'
 import { openUrl } from "@nativescript/core/utils/utils"
@@ -37,22 +37,25 @@ import { connectionType, getConnectionType, startMonitoring, stopMonitoring }fro
 import urls from '../urls'
 export default {
     data: () => ({
-        form: {},
+        form: {
+            qr_code: 'CCES4IRQFZ',
+            password: 'infosoft',
+        },
         isUpdated: true,
         dbVersion: null,
         appVersion: null,
         connectionStatus: null
     }),
     computed: {
-        // ...mapGetters('login', ['user'])
+        ...mapGetters('login', ['user'])
     },
-    // mixins: [Globals],
+    mixins: [Globals],
     methods: {
-        // ...mapActions('login', ['LOGIN_USER']),
-        // ...mapActions('connection', ['FETCH_VERSION']),
-        // ...mapMutations('login', ['SET_USER', 'LOAD_USER']),
+        ...mapActions('login', ['LOGIN_USER']),
+        ...mapActions('connection', ['FETCH_VERSION']),
+        ...mapMutations('login', ['SET_USER', 'LOAD_USER']),
         login () {
-            /*this.LOGIN_USER(this.form).then(data => {
+            this.LOGIN_USER(this.form).then(data => {
                 if (!this._.isEmpty(data)) {
                     this.SET_USER(data)
                     this.$navigator.navigate('/dashboard', { clearHistory: true })
@@ -60,17 +63,18 @@ export default {
                     this.snackBar("error", data.data, "Could not connect to server")
                 }
             }).catch(data => {
+                console.log(data)
                 this.snackBar("password", data.data, "Please check your QR code and password")
-            })*/
+            })
         },
         camiguinLink() {
-            // openUrl('http://www.camiguin.gov.ph/');
+            openUrl('http://www.camiguin.gov.ph/');
         },
         infosoftLink() {
-            // openUrl('https://infosoftstudio.com/');
+            openUrl('https://infosoftstudio.com/');
         },
         apkLink() {
-          // openUrl('https://qrgo.page.link/R5mRM')
+          openUrl('https://qrgo.page.link/R5mRM')
         },
         async isAvailable () {
           // let y = await fetch(`https://validate.davaooneworld.com/results/r1JJZFy7eXR8B54c28dB8h6S4rSMsYLzrL9F`).ok
@@ -86,7 +90,7 @@ export default {
           // console.log(urls.API_URL)
         },
         getNetwork () {
-            /*startMonitoring((newConnectionType) => {
+            startMonitoring((newConnectionType) => {
                 switch (newConnectionType) {
                     case connectionType.none:
                         console.log('do stuff without internet')
@@ -105,7 +109,7 @@ export default {
                         this.isUpdated = false
                         break;
                 }
-            });*/
+            });
         },
         async version () {
             /*await this.FETCH_VERSION().then(response => {
@@ -125,17 +129,3 @@ export default {
 }
 
 </script>
-
-
-<style scoped lang="scss">
-    @import '~@nativescript/theme/scss/variables/blue';
-    // Custom styles
-    .fas {
-      @include colorize($color: accent);
-    }
-    .info {
-      font-size: 20;
-      horizontal-align: center;
-      vertical-align: center;
-    }
-</style>

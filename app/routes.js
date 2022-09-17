@@ -1,23 +1,27 @@
-// import Landing from './components/Landing'
 import Login from './components/Login'
-// import Signup from './components/Signup'
+import Dashboard from './components/stablishments/Dashboard'
 import Home from './components/Home'
-// import MessagesList from './components/MessagesList'
+import ScannedHDF from './components/stablishments/scan/ScannedHDF'
+import ScannedPerson from './components/stablishments/scan/ScannedPerson'
+import ScannedRtpcr from './components/stablishments/scan/ScannedRtpcr'
 
 export const routes = {
-/*  '/landing': {
-    component: Landing,
-  },*/
   '/login': {
     component: Login,
-  },/*
-  '/signup': {
-    component: Signup,
-  },*/
+  },
+  '/dashboard': {
+    component: Dashboard,
+  },
   '/home': {
     component: Home,
   },
-  /*'/messages': {
-    component: MessagesList,
-  },*/
+  '/scannedHDF': {
+    component: ScannedHDF,
+  },
+  '/scannedPerson': {
+    component: ScannedPerson,
+  },
+  '/scannedRtpcr': {
+    component: ScannedRtpcr,
+  },
 }
