@@ -1,0 +1,7 @@
+# deprecations
+
+## packages
+
+```
+nativescript-appversion
+```
