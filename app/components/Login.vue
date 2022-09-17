@@ -15,10 +15,10 @@
 
           <!-- <Button height="50" class="label-only" text="err sound" @tap="err"/> -->
         </StackLayout>
-        <!-- <StackLayout orientation="horizontal">
+        <StackLayout orientation="horizontal">
           <Button width="44%" class="hyperlink-camiguin" @tap="camiguinLink"/>
           <Button width="44%" class="hyperlink-infosoft" @tap="infosoftLink"/>
-        </StackLayout> -->
+        </StackLayout>
     </FlexboxLayout>
   </MDCardView>
 </Page>
@@ -43,7 +43,7 @@ export default {
         },
         isUpdated: true,
         dbVersion: null,
-        appVersion: null,
+        appVersion: 1.11,
         connectionStatus: null
     }),
     computed: {

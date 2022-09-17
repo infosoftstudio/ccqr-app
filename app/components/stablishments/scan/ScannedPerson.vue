@@ -10,6 +10,20 @@
       <Image v-if="scannedperson.individual.age < minor_age && scannedperson.individual.photo_face" class="status-minor" :src="serverUrl+scannedperson.individual.photo_face" height="200" width="200" stretch="aspectFit"/>
 
       <Label class="qr" horizontalAlignment="center" :text="scannedperson.individual.qr_code"/>
+
+      <Label
+        v-if="user.role == 'port' && scannedperson.visit_reservation[0] == 'green'"
+        class="visit-status-green"
+        horizontalAlignment="center"
+        :text="scannedperson.visit_reservation[1]"
+      />
+      <Label
+        v-if="user.role == 'port' && scannedperson.visit_reservation[0] == 'red'"
+        class="visit-status-red"
+        horizontalAlignment="center"
+        :text="scannedperson.visit_reservation[1]"
+      />
+
       <StackLayout class="name" orientation="horizontal" horizontalAlignment="center" width="100%">
         <Label textWrap="true">
           <FormattedString>
@@ -53,6 +67,7 @@ export default {
   }),
   mixins: [Globals],
   computed: {
+    ...mapGetters('login', ['user']),
     ...mapGetters('scanned', ['scannedperson', 'code']) //, 'code'
   },
   methods: {
