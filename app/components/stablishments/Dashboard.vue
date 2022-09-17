@@ -59,12 +59,12 @@
         </DockLayout>
       </MDCardView>
 
-      <MDCardView elevation="5" height="10%" @tap="port_scan(false)" class="dashboard-item" v-if="user.role == 'port'">
+      <!-- <MDCardView elevation="5" height="10%" @tap="port_scan(false)" class="dashboard-item" v-if="user.role == 'port'">
         <DockLayout stretchLastChild="true" backgroundColor="#0d3c3d">
           <Image dock="right" class="item-icon" src="~/assets/images/exit.png" stretch="aspectFit"/>
           <Label dock="left" text="Scan HDF" width="70%" height="40%" />
         </DockLayout>
-      </MDCardView>
+      </MDCardView> -->
 
       <!-- <Button width="44%" class="hyperlink-camiguin" @tap="dummyItems"/> -->
 
@@ -89,15 +89,13 @@
 </template>
 <script>
 // import appversion from 'nativescript-appversion'
-// import {BarcodeScanner} from "nativescript-barcodescanner";
+import {BarcodeScanner} from "nativescript-barcodescanner";
 import {mapGetters, mapActions, mapMutations} from 'vuex'
 // import { openUrl } from "@nativescript/core/utils/utils"
 // import axios from 'axios'
-// import { isAndroid, Application, AndroidApplication, AndroidActivityBundleEventData } from "@nativescript/core";
-// import {clear} from "@nativescript/core/application-settings";
 
 // import connectivityModule from '@nativescript/core/connectivity'
-// import { connectionType, getConnectionType, startMonitoring, stopMonitoring }from "@nativescript/core/connectivity";
+import { connectionType, getConnectionType, startMonitoring, stopMonitoring }from "@nativescript/core/connectivity";
 
 import Globals from '../../mixins/globals'
 import ScannedPerson from '../stablishments/scan/ScannedPerson'
@@ -119,7 +117,7 @@ export default {
             isConnected: false,
             route: '',
             dbVersion: null,
-            appVersion: null,
+            appVersion: 1.11,
             logoutUploading: false,
             logoutUploadingClick: 0,
             totalItems: 0
@@ -131,13 +129,13 @@ export default {
         ...mapGetters('connection', ['hasConnection', 'noConnectionQR'])
     },
     watch: {
-        /*'hasConnection': {
+        'hasConnection': {
             handler () {
                 this.isConnected = this.hasConnection
             },
             deep: true
-        },*/
-        /*'close': {
+        },
+        'close': {
             handler () {
                 if (this.close === true) {
                     this.SET_CLOSE(false)
@@ -145,7 +143,7 @@ export default {
                 }
             },
             deep: true
-        }*/
+        }
     },
     mixins: [Globals],
     components: {ScannedPerson, Blocked, ScannedRtpcr, ScannedHDF},
@@ -205,7 +203,7 @@ export default {
         tourScan () {
           // this.snackBar("facescan", 'Tours', 'Tours scan')
         },
-        scan(preferFrontCamera, showFlipCameraButton, params) {/*
+        scan(preferFrontCamera, showFlipCameraButton, params) {
             this.SET_TAP({front: preferFrontCamera, flip: showFlipCameraButton, params: params})
             // this.goTo('/scan')
             // this.$navigator.navigate('/scan')
@@ -260,7 +258,7 @@ export default {
                 }, 100)
             }).catch(data => {
                 console.log(data)
-            })*/
+            })
         },
         port_scan( is_rtpcr_scan ) {/*
             if (this.isConnected === true) {
@@ -307,20 +305,20 @@ export default {
             }
             else this.snackBar("error", "Connection error", "Feature not available for offline use.")*/
         },
-        async loadData () {/*
+        async loadData () {
           await this.LOAD_USER()
-          await this.LOAD_NO_CONNECTION_QR()*/
+          await this.LOAD_NO_CONNECTION_QR()
         },
-        dummyItems () {/*
+        dummyItems () {
             console.log('scanned')
             this.SET_ADDITIONAL_NO_CONNECTION_QR({qr: 'CCQRQBNKMG', type: 'entrance', time_scanned: moment().format() })
-        */},
-        checkitems (path) {/*
+        },
+        checkitems (path) {
             console.log(`${path} path ni`)
             this.route = path
-            this.monitorNetworkStart()*/
+            this.monitorNetworkStart()
         },
-        calledIfHasNet () {/*
+        calledIfHasNet () {
             this.SET_COUNT_ITEM(0)
             this.totalItems = 0
             this.items = this.noConnectionQR
@@ -344,9 +342,9 @@ export default {
                     }
                     this.$showModal(UploadModalStatus)
                 }
-            });*/
+            });
         },
-        monitorNetworkStart() {/*
+        monitorNetworkStart() {
             this.networkStatus = "Monitoring network connection changes.";
             startMonitoring((newConnectionType) => {
                 switch (newConnectionType) {
@@ -384,7 +382,7 @@ export default {
                     this.onlyonce = 0
                     break;
                 }
-            });*/
+            });
         },
         camiguinLink() {
             openUrl('http://www.camiguin.gov.ph/');
@@ -392,7 +390,7 @@ export default {
         infosoftLink() {
             openUrl('https://infosoftstudio.com/');
         },
-        onLogoutClick() {/*
+        onLogoutClick() {
           console.log(this.user)
             if (!this._.isEmpty(this.noConnectionQR) && (this.isConnected === true)) {
                 confirm({
@@ -423,7 +421,7 @@ export default {
                 alert('You have scanned persons offline please upload them first because we detected that have slow / no internet connection.')
             } else {
                 this.logout('/login')
-            }*/
+            }
         },
         async version () {/*
           await this.FETCH_VERSION().then(response => {

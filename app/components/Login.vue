@@ -63,7 +63,6 @@ export default {
                     this.snackBar("error", data.data, "Could not connect to server")
                 }
             }).catch(data => {
-                console.log(data)
                 this.snackBar("password", data.data, "Please check your QR code and password")
             })
         },
