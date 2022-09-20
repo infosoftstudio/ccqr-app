@@ -37,10 +37,7 @@ import { connectionType, getConnectionType, startMonitoring, stopMonitoring }fro
 import urls from '../urls'
 export default {
     data: () => ({
-        form: {
-            qr_code: 'CCES4IRQFZ',
-            password: 'infosoft',
-        },
+        form: {},
         isUpdated: true,
         dbVersion: null,
         appVersion: 1.11,
