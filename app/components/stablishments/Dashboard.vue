@@ -66,7 +66,7 @@
         </DockLayout>
       </MDCardView> -->
 
-      <!-- <Button width="44%" class="hyperlink-camiguin" @tap="dummyItems"/> -->
+      <Button width="44%" class="hyperlink-camiguin" @tap="errorSound()"/>
 
       <BarcodeScanner
           row="1"
@@ -91,10 +91,9 @@
 // import appversion from 'nativescript-appversion'
 import {BarcodeScanner} from "nativescript-barcodescanner";
 import {mapGetters, mapActions, mapMutations} from 'vuex'
-// import { openUrl } from "@nativescript/core/utils/utils"
-// import axios from 'axios'
+import { openUrl } from "@nativescript/core/utils/utils"
 
-// import connectivityModule from '@nativescript/core/connectivity'
+// import connectivityModule from '@nativescript/core/connectivity' 
 import { connectionType, getConnectionType, startMonitoring, stopMonitoring }from "@nativescript/core/connectivity";
 
 import Globals from '../../mixins/globals'
@@ -102,7 +101,6 @@ import ScannedPerson from '../stablishments/scan/ScannedPerson'
 import Blocked from '../stablishments/scan/Blocked'
 import ScannedRtpcr from '../stablishments/scan/ScannedRtpcr'
 import ScannedHDF from '../stablishments/scan/ScannedHDF'
-// import * as Sound from "nativescript-sound-kak";
 // import * as fs from "@nativescript/core/file-system";
 
 import moment from 'moment'
@@ -172,6 +170,7 @@ export default {
             'SET_REMOVE_INDEX_NO_CONNECTION_QR'
         ]),
         errorSound () {
+            this.playSound('audio/buzzer.mp3')
             /*const pathToBeep = fs.path.join(fs.knownFolders.currentApp().path, 'audio/buzzer.mp3');
             let beep;
             if (fs.File.exists(pathToBeep)) {

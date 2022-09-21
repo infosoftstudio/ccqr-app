@@ -1,6 +1,8 @@
-import { Feedback, FeedbackType, FeedbackPosition } from "nativescript-feedback";
-import { Color } from "@nativescript/core/color";
-import {mapMutations} from 'vuex'
+import { Feedback, FeedbackType, FeedbackPosition } from "nativescript-feedback"
+import { TNSPlayer } from 'nativescript-audio'
+import { Color } from "@nativescript/core/color"
+import { mapMutations } from 'vuex'
+import * as fs from "@nativescript/core/file-system"
 import {
     clear
 } from "@nativescript/core/application-settings";
@@ -51,6 +53,35 @@ export default {
                     this.$navigator.navigate(payload, { clearHistory: true })
                 }
             });
-        }
+        },
+        playSound(filePath) {
+            // const pathToBeep = fs.path.join(fs.knownFolders.currentApp().path, 'audio/buzzer.mp3')
+            const pathToBeep = fs.path.join(fs.knownFolders.currentApp().path, 'audio/buzzer.mp3')
+            console.log('pathToBeep', pathToBeep)
+
+            const player = new TNSPlayer();
+            const playerOptions = {
+                audioFile: pathToBeep,
+                loop: false,
+                completeCallback: function () {
+                    console.log('finished playing');
+                },
+                errorCallback: function (errorObject) {
+                    console.log(JSON.stringify(errorObject));
+                },
+                infoCallback: function (args) {
+                    console.log(JSON.stringify(args));
+                }
+            };
+
+            player
+                .playFromFile(playerOptions)
+                .then(res => {
+                    console.log(res);
+                })
+                .catch(err => {
+                    console.log('something went wrong...', err);
+                });
+        },
     }
 }
