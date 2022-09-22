@@ -6,8 +6,8 @@
       <Label v-if="scannedperson.individual.age < minor_age && scannedperson.individual.first_name" horizontalAlignment="center" text="(Please check if accompanied by guardian)"/>
       <Label v-if="!scannedperson.individual.first_name" class="status-success" horizontalAlignment="center" text="SCANNED IN OFFLINE MODE"/>
 
-      <Image v-if="scannedperson.individual.age >= minor_age && scannedperson.individual.photo_face" class="status-success" :src="serverUrl+scannedperson.individual.photo_face" height="200" width="200" stretch="aspectFit"/>
-      <Image v-if="scannedperson.individual.age < minor_age && scannedperson.individual.photo_face" class="status-minor" :src="serverUrl+scannedperson.individual.photo_face" height="200" width="200" stretch="aspectFit"/>
+      <Image v-if="scannedperson.individual.age >= minor_age && scannedperson.individual.photo_face" class="status-success" :src="photoSrc" height="200" width="200" stretch="aspectFit"/>
+      <Image v-if="scannedperson.individual.age < minor_age && scannedperson.individual.photo_face" class="status-minor" :src="photoSrc" height="200" width="200" stretch="aspectFit"/>
 
       <Label class="qr" horizontalAlignment="center" :text="scannedperson.individual.qr_code"/>
 
@@ -63,12 +63,22 @@ import urls from '~/urls.js'
 export default {
   data: () => ({
     minor_age: 17,
-    serverUrl: ''
+    serverUrl: '',
+    photo_face: '',
   }),
   mixins: [Globals],
   computed: {
     ...mapGetters('login', ['user']),
-    ...mapGetters('scanned', ['scannedperson', 'code']) //, 'code'
+    ...mapGetters('scanned', ['scannedperson', 'code']),
+    photoSrc() {
+      const img = this.scannedperson.individual.photo_face
+      if(img.includes('/')) {
+        return this.serverUrl + img
+      }
+      else {
+        return `${urls.SGP_PATH}${this.scannedperson.individual.id}/individual-uploaded-face/${img}`
+      }
+    }
   },
   methods: {
     ...mapMutations('scanned', ['SET_CLOSE']),
