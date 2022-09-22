@@ -66,7 +66,7 @@
         </DockLayout>
       </MDCardView> -->
 
-      <Button width="44%" class="hyperlink-camiguin" @tap="errorSound()"/>
+      <!-- <Button width="44%" class="hyperlink-camiguin" @tap="errorSound()"/> -->
 
       <BarcodeScanner
           row="1"
@@ -169,17 +169,6 @@ export default {
             'LOAD_NO_CONNECTION_QR',
             'SET_REMOVE_INDEX_NO_CONNECTION_QR'
         ]),
-        errorSound () {
-            this.playSound('audio/buzzer.mp3')
-            /*const pathToBeep = fs.path.join(fs.knownFolders.currentApp().path, 'audio/buzzer.mp3');
-            let beep;
-            if (fs.File.exists(pathToBeep)) {
-                beep = Sound.create(pathToBeep)
-                setTimeout(() => {
-                    beep.play();
-                }, 500);
-            }*/
-        },
         hdf_scan ( initial ) {
             /*const pathToBeep = fs.path.join(fs.knownFolders.currentApp().path,  initial ? 'audio/hdf-verify.mp3' : 'audio/hdf-duplicate.mp3');
             let beep;
@@ -229,7 +218,15 @@ export default {
                                 this.SET_SCANNED_PERSON(null)
                                 this.SET_SCANNED_PERSON(response)
                                 this.$showModal(ScannedPerson)
-                                response.individual.age < 18 && this.errorSound()
+                                if(response.individual.age < 18) {
+                                    this.playSound('buzzer.mp3')
+                                }
+                                else if(this.user.role == 'port' && response.visit_reservation[0] == 'red') {
+                                    this.playSound('buzzer.mp3')   
+                                }
+                                else {
+                                    this.playSound('hdf-verify.mp3')
+                                }
                                 // this.scan(preferFrontCamera, showFlipCameraButton, params)
                             })
                             .catch(response => {
@@ -252,6 +249,7 @@ export default {
                             }
                         })
                         this.$showModal(ScannedPerson)
+                        this.playSound('hdf-verify.mp3')
                         // this.scan(preferFrontCamera, showFlipCameraButton, params)
                     }
                 }, 100)

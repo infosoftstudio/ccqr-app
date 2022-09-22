@@ -1,8 +1,9 @@
 import { Feedback, FeedbackType, FeedbackPosition } from "nativescript-feedback"
-import { TNSPlayer } from 'nativescript-audio'
 import { Color } from "@nativescript/core/color"
 import { mapMutations } from 'vuex'
 import * as fs from "@nativescript/core/file-system"
+
+const audio = require('nativescript-audio');
 import {
     clear
 } from "@nativescript/core/application-settings";
@@ -54,14 +55,12 @@ export default {
                 }
             });
         },
-        playSound(filePath) {
-            // const pathToBeep = fs.path.join(fs.knownFolders.currentApp().path, 'audio/buzzer.mp3')
-            const pathToBeep = fs.path.join(fs.knownFolders.currentApp().path, 'audio/buzzer.mp3')
-            console.log('pathToBeep', pathToBeep)
+        playSound(file) {
+            const pathToBeep = fs.knownFolders.currentApp().getFolder('assets/audio')
 
-            const player = new TNSPlayer();
+            const player = new audio.TNSPlayer();
             const playerOptions = {
-                audioFile: pathToBeep,
+                audioFile: `${pathToBeep.path}/${file}`,
                 loop: false,
                 completeCallback: function () {
                     console.log('finished playing');
@@ -83,5 +82,35 @@ export default {
                     console.log('something went wrong...', err);
                 });
         },
+        checkContents() {
+            const documents = fs.knownFolders.currentApp().getFolder('assets/audio');
+            let entArray = []
+            documents.getEntities()
+            .then((entities) => {
+                // entities is array with the document's files and folders.
+                console.log('ent count', entities.length)
+                entities.forEach((entity) => {
+                    entArray.push(
+                        {
+                            name: entity.name,
+                            path: entity.path,
+                            lastModified: entity.lastModified.toString()
+                        }
+                    );
+                    console.log('ent:', {
+                            name: entity.name,
+                            path: entity.path,
+                            lastModified: entity.lastModified.toString()
+                        })
+                });
+            }).catch((err) => {
+                // Failed to obtain folder's contents.
+                console.log(err.stack);
+            });
+
+            if(entArray.length > 0) {
+                console.log('ents:',entArray)
+            }
+        }
     }
 }
