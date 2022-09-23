@@ -12,13 +12,13 @@
       <Label class="qr" horizontalAlignment="center" :text="scannedperson.individual.qr_code"/>
 
       <Label
-        v-if="user.role == 'port' && scannedperson.visit_reservation[0] == 'green'"
+        v-if="visitorChecker && scannedperson.visit_reservation[0] == 'green'"
         class="visit-status-green"
         horizontalAlignment="center"
         :text="scannedperson.visit_reservation[1]"
       />
       <Label
-        v-if="user.role == 'port' && scannedperson.visit_reservation[0] == 'red'"
+        v-if="visitorChecker && scannedperson.visit_reservation[0] == 'red'"
         class="visit-status-red"
         horizontalAlignment="center"
         :text="scannedperson.visit_reservation[1]"
@@ -78,7 +78,11 @@ export default {
       else {
         return `${urls.SGP_PATH}${this.scannedperson.individual.id}/individual-uploaded-face/${img}`
       }
-    }
+    },
+    visitorChecker() {
+      const roles = ['port', 'airport']
+      return roles.includes(this.user.role)
+    },
   },
   methods: {
     ...mapMutations('scanned', ['SET_CLOSE']),

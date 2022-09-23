@@ -52,7 +52,7 @@
         </DockLayout>
       </MDCardView>
 
-      <MDCardView elevation="5" height="10%" @tap="port_scan(true)" class="dashboard-item" v-if="user.role == 'port'">
+      <MDCardView elevation="5" height="10%" @tap="port_scan(true)" class="dashboard-item" v-if="visitorChecker">
         <DockLayout stretchLastChild="true" backgroundColor="#307f82">
           <Image dock="right" class="item-icon" src="~/assets/images/entrance.png" stretch="aspectFit"/>
           <Label dock="left" text="Scan RT-PCR" width="70%" height="40%" />
@@ -124,7 +124,11 @@ export default {
     computed: {
         ...mapGetters('login', ['user']),
         ...mapGetters('scanned', ['scannedperson', 'code', 'close', 'tap', 'countItem']),
-        ...mapGetters('connection', ['hasConnection', 'noConnectionQR'])
+        ...mapGetters('connection', ['hasConnection', 'noConnectionQR']),
+        visitorChecker() {
+            const roles = ['port', 'airport']
+            return roles.includes(this.user.role)
+        },
     },
     watch: {
         'hasConnection': {
@@ -221,7 +225,7 @@ export default {
                                 if(response.individual.age < 18) {
                                     this.playSound('buzzer.mp3')
                                 }
-                                else if(this.user.role == 'port' && response.visit_reservation[0] == 'red') {
+                                else if(this.visitorChecker && response.visit_reservation[0] == 'red') {
                                     this.playSound('buzzer.mp3')   
                                 }
                                 else {
