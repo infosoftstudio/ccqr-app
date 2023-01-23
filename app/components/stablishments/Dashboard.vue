@@ -261,7 +261,7 @@ export default {
                 console.log(data)
             })
         },
-        port_scan( is_rtpcr_scan ) {/*
+        port_scan( is_rtpcr_scan ) {
             if (this.isConnected === true) {
                 new BarcodeScanner().scan({
                     cancelLabel: "EXIT. Also, try the volume buttons!",
@@ -304,7 +304,7 @@ export default {
                         }, 100)
                     })
             }
-            else this.snackBar("error", "Connection error", "Feature not available for offline use.")*/
+            else this.snackBar("error", "Connection error", "Feature not available for offline use.")
         },
         async loadData () {
           await this.LOAD_USER()

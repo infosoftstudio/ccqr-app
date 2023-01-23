@@ -4,6 +4,13 @@ local:
 build:
 	tns build android --force
 
+build-aab:
+	ns run android --key-store-path="./ccqr.keystore" --key-store-password="123456" --key-store-alias="ccqr" --key-store-alias-password="123456" --aab
+
+release-aab:
+	ns run android --release --key-store-path="./ccqr.keystore" --key-store-password="123456" --key-store-alias="ccqr" --key-store-alias-password="123456" --aab --copy-to="./platforms/android/app/build/outputs/bundle/release/app-release.aab"
+
+
 build-production:
 	tns build android --release --key-store-path="./ccqr.keystore" --key-store-password="123456" --key-store-alias="ccqr" --key-store-alias-password="123456"
 

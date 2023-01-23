@@ -43,6 +43,9 @@ export default {
         appVersion: 1.11,
         connectionStatus: null
     }),
+    created() {
+        this.loadLogin()
+    },
     computed: {
         ...mapGetters('login', ['user'])
     },
@@ -106,6 +109,11 @@ export default {
                         break;
                 }
             });
+        },
+        loadLogin() {
+            if( urls.DEBUG ) {
+                this.form = Object.assign({}, this.form, urls.LOGIN)
+            }
         },
         async version () {
             /*await this.FETCH_VERSION().then(response => {
