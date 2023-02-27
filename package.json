@@ -37,12 +37,20 @@
     "category-general"
   ],
   "dependencies": {
+    "@nativescript-community/ui-material-cardview": "^7.0.26",
+    "@nativescript-community/ui-material-floatingactionbutton": "^7.0.28",
     "@nativescript/core": "~8.3.4",
     "@nativescript/theme": "~3.0.1",
     "axios": "^0.24.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "nativescript-audio": "^6.2.6",
+    "nativescript-barcodescanner": "^4.1.2",
+    "nativescript-feedback": "^2.0.0",
     "nativescript-vue": "~2.9.0",
     "nativescript-vue-navigator": "^1.2.0",
     "semver": "^7.3.7",
+    "vue-lodash": "^2.1.2",
     "vuex": "^3.6.2"
   },
   "devDependencies": {

@@ -5,7 +5,7 @@ import axios from 'axios/dist/axios'
 import urls from '~/urls.js'
 
 export const Http = axios.create({
-    baseURL: `${urls.API_URL}`
+    baseURL: `${urls.API_URL}api`
 })
 
 Http.interceptors.request.use(function (config) {
