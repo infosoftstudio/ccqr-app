@@ -50,6 +50,11 @@
           <Label class="info-label" text="Address: "/>
           <Label class="info-content" :text="scannedperson.individual.address "/>
         </StackLayout>
+        <StackLayout orientation="horizontal" horizontalAlignment="center">
+          <!-- <Label class="info-label" text="Address: "/> -->
+          <Label v-if="scannedperson.vaxxed" class="visit-status-green" text="Vaccinated"/>
+          <Label v-else class="visit-status-red" text="Not Vaccinated"/>
+        </StackLayout>
       </StackLayout>
       <Button height="50" class="round-btn" text="Scan Again" @tap="closed()" style="margin-top: 20px"/>
     </StackLayout>

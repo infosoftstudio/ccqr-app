@@ -12,6 +12,15 @@
             text="Logout"
             style="color: white;"
           />
+          <!-- <MDFloatingActionButton
+            @tap="onLogoutClick()"
+            top="60"
+            left="200"
+            rippleColor="#d79a73"
+            backgroundColor="#f68f4f"
+            :text="`Offline scans: ${noConnectionQR.length}`"
+            style="color: white;"
+          /> -->
           <Button
             v-if="appVersion < dbVersion"
             top="80" left="10"
@@ -398,7 +407,7 @@ export default {
                     title: "Caution!",
                     message: "Scanned offline is not emtpy please upload it first before loging out.",
                     okButtonText: "UPLOAD",
-                    cancelButtonText: "PROCEED WITH CAUTION"
+                    cancelButtonText: "CANCEL"
                 }).then(result => {
                     if (result) {
                         this.logoutUploadingClick += 1 // increament once click "ok"
@@ -408,7 +417,7 @@ export default {
                                     if (this._.isEmpty(this.noConnectionQR)) { // to validate if emtpy na ang sa store
                                       this.logoutUploadingClick = 0 // to reset the only click once
                                       this.items = this.noConnectionQR // to reset the items
-                                      alert('All items are successfully uploaded it is save to logout now')
+                                      alert('All items are successfully uploaded! It is safe to logout now')
                                     }
                                     this.SET_REMOVE_INDEX_NO_CONNECTION_QR(idx)
                                 })
