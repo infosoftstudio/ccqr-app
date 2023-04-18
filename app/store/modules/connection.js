@@ -6,7 +6,7 @@ import Vue from "nativescript-vue";
 const initialState = () => {
   return {
       hasConnection: false, // false no conenction, true means naa
-      noConnectionQR: []
+      offlineScans: []
   }
 }
 
@@ -17,19 +17,22 @@ const mutations = {
       state.hasConnection = payload
   },
   SET_ADDITIONAL_NO_CONNECTION_QR (state, payload) {
-      state.noConnectionQR.push(payload)
-      setString("noConnectionQR", JSON.stringify(state.noConnectionQR));
+      state.offlineScans.push(payload)
+      setString("offlineScans", JSON.stringify(state.offlineScans));
   },
   SET_REMOVE_INDEX_NO_CONNECTION_QR(state, payload) {
-      // Vue.delete(state.noConnectionQR, payload) // delete item in vuex
-      state.noConnectionQR.splice(state.noConnectionQR.indexOf(payload), 1)
-      setString("noConnectionQR", JSON.stringify(state.noConnectionQR)); // update the noConnectionQR stored cache
+      // Vue.delete(state.offlineScans, payload) // delete item in vuex
+      state.offlineScans.splice(state.offlineScans.indexOf(payload), 1)
+      setString("offlineScans", JSON.stringify(state.offlineScans)); // update the offlineScans stored cache
+  },
+  REMOVE_OFFLINE_SCANS(state, payload) {
+      state.offlineScans = []
   },
   LOAD_NO_CONNECTION_QR (state, payload) {
-      const noConnectionQR = getString('noConnectionQR') // noConnectionQR from app settings
-      if(noConnectionQR) {
-          const cnoConnectionQR = JSON.parse(noConnectionQR);
-          state.noConnectionQR = cnoConnectionQR;
+      const offlineScans = getString('offlineScans') // offlineScans from app settings
+      if(offlineScans) {
+          const cofflineScans = JSON.parse(offlineScans);
+          state.offlineScans = cofflineScans;
       }
   },
   RESET_CONNECTION_STATE (state) {
@@ -39,7 +42,7 @@ const mutations = {
 
 const getters = {
     hasConnection: state => state.hasConnection,
-    noConnectionQR: state => state.noConnectionQR
+    offlineScans: state => state.offlineScans
 }
 
 const actions = {

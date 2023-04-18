@@ -18,7 +18,7 @@
             left="200"
             rippleColor="#d79a73"
             backgroundColor="#f68f4f"
-            :text="`Offline scans: ${noConnectionQR.length}`"
+            :text="`Offline scans: ${offlineScans.length}`"
             style="color: white;"
           /> -->
           <Button
@@ -133,7 +133,7 @@ export default {
     computed: {
         ...mapGetters('login', ['user']),
         ...mapGetters('scanned', ['scannedperson', 'code', 'close', 'tap', 'countItem']),
-        ...mapGetters('connection', ['hasConnection', 'noConnectionQR']),
+        ...mapGetters('connection', ['hasConnection', 'offlineScans']),
         visitorChecker() {
             const roles = ['port', 'airport']
             return roles.includes(this.user.role)
@@ -160,7 +160,7 @@ export default {
     components: {ScannedPerson, Blocked, ScannedRtpcr, ScannedHDF},
     methods: {
         ...mapActions('scanned', [
-            'GET_CODE',
+            'LOG_SCANNED',
             'CREATE_ADD_LOG',
             'VERIFY_HDF'
         ]),
@@ -189,7 +189,7 @@ export default {
                 beep = Sound.create(pathToBeep)
                 setTimeout(() => {
                     beep.play();
-                }, 500);
+                }, 500);select * from individual_logs order by id desc limit 100
             }*/
         },
 
@@ -226,7 +226,7 @@ export default {
             }).then(data => {
                 setTimeout(() => {
                     if (this.isConnected === true) {
-                        this.GET_CODE({qr: data.text, type: params, mode: 'online',  version: this.appVersion})
+                        this.LOG_SCANNED({qr: data.text, type: params, mode: 'online',  version: this.appVersion})
                             .then(response => {
                                 this.SET_SCANNED_PERSON(null)
                                 this.SET_SCANNED_PERSON(response)
@@ -254,7 +254,16 @@ export default {
                             })
 
                     } else {
-                        this.SET_ADDITIONAL_NO_CONNECTION_QR({qr: data.text, type: params, time_scanned: moment().format(), mode: 'offline',  version: this.appVersion})
+                        const scan = {
+                            qr: data.text,
+                            establishment_id: this.user.establishment.id,
+                            type: params,
+                            time_scanned: moment().format(),
+                            mode: 'offline',
+                            version: this.appVersion
+                        }
+
+                        this.SET_ADDITIONAL_NO_CONNECTION_QR(scan)
                         this.SET_SCANNED_PERSON(null)
                         this.SET_SCANNED_PERSON({
                             individual: {
@@ -326,7 +335,7 @@ export default {
         calledIfHasNet () {
             this.SET_COUNT_ITEM(0)
             this.totalItems = 0
-            this.items = this.noConnectionQR
+            this.items = this.offlineScans
             this.logoutUploadingClick = 0 // to reset into 0 when connection successfully established
             confirm({
                 title: "Upload scanned QR",
@@ -336,15 +345,14 @@ export default {
             }).then(result => {
                 console.log(result)
                 if (result === true) {
-                    this.SET_MAX_ITEM(this.items.length)
-                    for (let idx in this.items) { // in is array index, of is object
-                        this.GET_CODE(this.items[idx]).then(data => {
-                            console.log(idx)
-                            this.totalItems += 1
-                            this.SET_COUNT_ITEM(this.totalItems)
-                            this.SET_REMOVE_INDEX_NO_CONNECTION_QR(idx)
-                        })
-                    }
+                    // this.SET_MAX_ITEM(this.items.length)
+                    // for (let idx in this.items) { // in is array index, of is object
+                    //     this.LOG_SCANNED(this.items[idx]).then(data => {
+                    //         this.totalItems += 1
+                    //         this.SET_COUNT_ITEM(this.totalItems)
+                    //         this.SET_REMOVE_INDEX_NO_CONNECTION_QR(idx)
+                    //     })
+                    // }
                     this.$showModal(UploadModalStatus)
                 }
             });
@@ -364,7 +372,7 @@ export default {
                     console.log("Connection type changed to WiFi.")
                     this.networkStatus = "Connection type changed to WiFi."
                     this.SET_HASCONNECTION(true)
-                    if (!this._.isEmpty(this.noConnectionQR) && (Object.entries(this.user).length !== 0)) {
+                    if (!this._.isEmpty(this.offlineScans) && (Object.entries(this.user).length !== 0)) {
                         this.onlyonce += 1
                         if (this.onlyonce === 1) {
                             this.calledIfHasNet()
@@ -375,7 +383,7 @@ export default {
                     console.log("Connection type changed to mobile.")
                     this.networkStatus = "Connection type changed to mobile."
                     this.SET_HASCONNECTION(true)
-                    if (!this._.isEmpty(this.noConnectionQR) && (Object.entries(this.user).length !== 0)) {
+                    if (!this._.isEmpty(this.offlineScans) && (Object.entries(this.user).length !== 0)) {
                         this.onlyonce += 1
                         if (this.onlyonce === 1) {
                             this.calledIfHasNet()
@@ -397,7 +405,7 @@ export default {
         },
         onLogoutClick() {
           console.log(this.user)
-            if (!this._.isEmpty(this.noConnectionQR) && (this.isConnected === true)) {
+            if (!this._.isEmpty(this.offlineScans) && (this.isConnected === true)) {
                 confirm({
                     title: "Caution!",
                     message: "Scanned offline is not emtpy please upload it first before loging out.",
@@ -408,10 +416,10 @@ export default {
                         this.logoutUploadingClick += 1 // increament once click "ok"
                         if (this.logoutUploadingClick === 1) { // to catch multiple click in logout // execute only once
                             for (let idx in this.items) {
-                                this.GET_CODE(this.items[idx]).then(data => {
-                                    if (this._.isEmpty(this.noConnectionQR)) { // to validate if emtpy na ang sa store
+                                this.LOG_SCANNED(this.items[idx]).then(data => {
+                                    if (this._.isEmpty(this.offlineScans)) { // to validate if emtpy na ang sa store
                                       this.logoutUploadingClick = 0 // to reset the only click once
-                                      this.items = this.noConnectionQR // to reset the items
+                                      this.items = this.offlineScans // to reset the items
                                       alert('All items are successfully uploaded! It is safe to logout now')
                                     }
                                     this.SET_REMOVE_INDEX_NO_CONNECTION_QR(idx)
@@ -422,7 +430,7 @@ export default {
                         this.logout('/login')
                     }
                 })
-            } else if (!this._.isEmpty(this.noConnectionQR) && (this.isConnected === false)) {
+            } else if (!this._.isEmpty(this.offlineScans) && (this.isConnected === false)) {
                 alert('You have scanned persons offline please upload them first because we detected that have slow / no internet connection.')
             } else {
                 this.logout('/login')

@@ -58,8 +58,11 @@ const actions = {
     /* LOGIN_USER ({ commit }, payload) { // login user
         return postApi('login', payload)
         } */
-    GET_CODE({commit}, payload) {
+    LOG_SCANNED({commit}, payload) {
         return axiospostApi('/test-scan', payload)
+    },
+    BULK_LOG_OFFLINE_SCANS({commit}, payload) {
+      return axiospostApi('/offline-scans', payload)
     },
     CREATE_ADD_LOG({commit}, payload) {
         return postApi('add-log', payload)

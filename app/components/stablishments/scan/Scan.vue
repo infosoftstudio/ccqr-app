@@ -47,7 +47,7 @@ export default {
         'SET_SCANNED_PERSON'
     ]),
     ...mapActions('scanned', [
-        'GET_CODE'
+        'LOG_SCANNED'
     ]),
     ...mapMutations('connection', [
       'SET_ADDITIONAL_NO_CONNECTION_QR'
@@ -70,7 +70,7 @@ export default {
       }).then(data => {
           setTimeout(() => {
               if (this.isConnected === true) {
-                  this.GET_CODE({qr: data.text, type: params})
+                  this.LOG_SCANNED({qr: data.text, type: params})
                       .then(response => {
                           this.SET_SCANNED_PERSON(null)
                           this.SET_SCANNED_PERSON(response)
@@ -81,7 +81,7 @@ export default {
                           //console.log('potaena'+response.data)
                           this.snackBar("facescan", response.data, 'Qr code does not exist!')
                       })
-                  
+
               } else {
                   this.SET_ADDITIONAL_NO_CONNECTION_QR({qr: data.text, type: params, time_scanned: moment().format()})
                   this.SET_SCANNED_PERSON(null)
