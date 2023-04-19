@@ -68,6 +68,13 @@
         </DockLayout>
       </MDCardView>
 
+      <!-- <MDCardView elevation="5" height="10%" @tap="test()" class="dashboard-item">
+        <DockLayout stretchLastChild="true" backgroundColor="#307f82">
+          <Image dock="right" class="item-icon" src="~/assets/images/entrance.png" stretch="aspectFit"/>
+          <Label dock="left" text="TESTING" width="70%" height="40%" />
+        </DockLayout>
+      </MDCardView> -->
+
       <!-- <MDCardView elevation="5" height="10%" @tap="port_scan(false)" class="dashboard-item" v-if="user.role == 'port'">
         <DockLayout stretchLastChild="true" backgroundColor="#0d3c3d">
           <Image dock="right" class="item-icon" src="~/assets/images/exit.png" stretch="aspectFit"/>
@@ -266,6 +273,7 @@ export default {
                         this.SET_ADDITIONAL_NO_CONNECTION_QR(scan)
                         this.SET_SCANNED_PERSON(null)
                         this.SET_SCANNED_PERSON({
+                            offline: true,
                             individual: {
                                 qr_code: data.text
                             }
@@ -435,6 +443,9 @@ export default {
             } else {
                 this.logout('/login')
             }
+        },
+        test () {
+            console.log('offline scanssss:', this.offlineScans)
         },
         async version () {/*
           await this.FETCH_VERSION().then(response => {

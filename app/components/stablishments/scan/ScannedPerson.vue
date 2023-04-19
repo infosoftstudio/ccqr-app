@@ -64,13 +64,13 @@
       />
 
       <Label
-        v-if="visitorChecker && scannedperson.visit_reservation[0] == 'green'"
+        v-if="visitorChecker && !scannedperson.offline && scannedperson.visit_reservation[0] == 'green'"
         class="visit-status-green"
         horizontalAlignment="center"
         :text="scannedperson.visit_reservation[1]"
       />
       <Label
-        v-if="visitorChecker && scannedperson.visit_reservation[0] == 'red'"
+        v-if="visitorChecker && !scannedperson.offline && scannedperson.visit_reservation[0] == 'red'"
         class="visit-status-red"
         horizontalAlignment="center"
         :text="scannedperson.visit_reservation[1]"
@@ -146,7 +146,11 @@
             :text="scannedperson.individual.address"
           />
         </StackLayout>
-        <StackLayout orientation="horizontal" horizontalAlignment="center">
+        <StackLayout
+          v-if="!scannedperson.offline"
+          orientation="horizontal"
+          horizontalAlignment="center"
+        >
           <!-- <Label class="info-label" text="Address: "/> -->
           <Label
             v-if="scannedperson.vaxxed"
@@ -196,11 +200,11 @@ export default {
   },
   methods: {
     ...mapMutations("scanned", ["SET_CLOSE"]),
-    scanned() {
-      for (let item in this.scannedperson.individual) {
-        console.log(item + ` ${this.scannedperson.individual[item]}`);
-      }
-    },
+    // scanned() {
+    //   for (let item in this.scannedperson.individual) {
+    //     console.log(item + ` ${this.scannedperson.individual[item]}`);
+    //   }
+    // },
     closed() {
       this.SET_CLOSE(true);
       this.$modal.close();
@@ -208,6 +212,7 @@ export default {
   },
   created() {
     this.serverUrl = urls.API_URL;
+    console.log("scanned person", this.scannedperson);
   },
 };
 </script>

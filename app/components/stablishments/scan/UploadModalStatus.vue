@@ -4,7 +4,7 @@
       <!-- <Label v-if="countItem != maxItem">Uploading {{ countItem }} out of {{ maxItem }}</Label>
       <Progress v-if="countItem != maxItem" :value="countItem" :maxValue="maxItem"/>
       <Label v-if="countItem === maxItem"> Upload Successful! </Label> -->
-      <Label v-if="uploading_status === 'uploading'">Uploading {{ maxItem }} offline scanned individuals ...</Label>
+      <Label v-if="uploading_status === 'uploading'">Uploading offline scanned individuals ...</Label>
       <Label v-else-if="uploading_status === 'success'"> Upload Successful! </Label>
       <Label v-else-if="uploading_status === 'failed'"> Upload failed. </Label>
     </StackLayout>
@@ -33,15 +33,15 @@ export default {
       this.uploading_status = 'uploading'
       this.BULK_LOG_OFFLINE_SCANS(this.offlineScans)
       .then(response => {
-        console.log(1)
         this.uploading_status = 'success'
         this.REMOVE_OFFLINE_SCANS()
+        console.log(1, this.uploading_status)
       })
       .catch(response => {
-        console.log(2)
         this.uploading_status = 'failed'
+        console.log(2, this.uploading_status)
       })
-      console.log(3)
+      console.log(3, this.uploading_status)
     },
   },
   watch: {
