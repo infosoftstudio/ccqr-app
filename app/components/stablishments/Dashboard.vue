@@ -44,6 +44,7 @@
             class="establishment-name"
             :text="user.establishment ? user.establishment.name : null"
           />
+
         </AbsoluteLayout>
       </MDCardView>
 
