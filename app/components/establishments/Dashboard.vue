@@ -1,35 +1,29 @@
 <template>
-  <Page @loaded="oneGlance" actionBarHidden="true">
+  <Page @loaded="oneGlance(), getAppVersion()" actionBarHidden="true">
     <StackLayout>
       <MDCardView elevation="5" height="25%" class="dashboard-item image">
         <AbsoluteLayout backgroundColor="#3c495e">
           <Image top="0" src="~/assets/images/dashboard.png" height="100%" width="100%" stretch="fill"/>
+          <!-- @tap="onLogoutClick()" -->
           <MDFloatingActionButton
-            @tap="onLogoutClick()"
+            @tap="userSettingsClicked()"
             left="240"
             rippleColor="#d79a73"
             backgroundColor="#f68f4f"
-            text="Logout"
+            text="Settings"
             style="color: white;"
-          />
-          <!-- <MDFloatingActionButton
-            @tap="onLogoutClick()"
-            top="60"
-            left="200"
-            rippleColor="#d79a73"
-            backgroundColor="#f68f4f"
-            :text="`Offline scans: ${offlineScans.length}`"
-            style="color: white;"
-          /> -->
-          <Button
+          >
+            <Image dock="right" class="item-icon" src="~/assets/images/entrance.png" stretch="aspectFit"/>
+          </MDFloatingActionButton>
+          <!-- <Button
             v-if="appVersion < dbVersion"
             top="80" left="10"
             height="50" class="update-button dashboard"
             text="Click to update to latest version"
             @tap="apkLink"
-          />
+          /> -->
+          <!-- v-if="appVersion >= dbVersion" -->
           <Label
-            v-if="appVersion >= dbVersion"
             top="80" left="25"
             width="70%" height="40%"
             fontSize="20"
@@ -126,10 +120,10 @@ import {
 } from "@nativescript/core/connectivity";
 
 import Globals from "../../mixins/globals";
-import ScannedPerson from "../stablishments/scan/ScannedPerson";
-import Blocked from "../stablishments/scan/Blocked";
-import ScannedRtpcr from "../stablishments/scan/ScannedRtpcr";
-import ScannedHDF from "../stablishments/scan/ScannedHDF";
+import ScannedPerson from "../establishments/scan/ScannedPerson";
+import Blocked from "../establishments/scan/Blocked";
+import ScannedRtpcr from "../establishments/scan/ScannedRtpcr";
+import ScannedHDF from "../establishments/scan/ScannedHDF";
 // import * as fs from "@nativescript/core/file-system";
 
 import moment from "moment";
@@ -144,7 +138,6 @@ export default {
       isConnected: false,
       route: "",
       dbVersion: null,
-      appVersion: 1.11,
       logoutUploading: false,
       logoutUploadingClick: 0,
       totalItems: 0,
@@ -160,6 +153,7 @@ export default {
       "countItem",
     ]),
     ...mapGetters("connection", ["hasConnection", "offlineScans"]),
+    ...mapGetters("user", ["appVersion"]),
     visitorChecker() {
       const roles = ["port", "airport"];
       return roles.includes(this.user.role);
@@ -218,7 +212,6 @@ export default {
       // console.log(`onScanResult: ${evt.text} (${evt.format})`);
     },
     oneGlance() {
-      this.version();
       this.monitorNetworkStart();
       this.loadData();
     },
@@ -491,7 +484,7 @@ export default {
         confirm({
           title: "Caution!",
           message:
-            "Scanned offline is not emtpy please upload it first before loging out.",
+            "Please upload or Export Offline Scans first!",
           okButtonText: "UPLOAD",
           cancelButtonText: "CANCEL",
         }).then((result) => {
@@ -506,7 +499,7 @@ export default {
                     this.logoutUploadingClick = 0; // to reset the only click once
                     this.items = this.offlineScans; // to reset the items
                     alert(
-                      "All items are successfully uploaded! It is safe to logout now"
+                      "Offline scans are successfully uploaded! You can now log out safely"
                     );
                   }
                   this.SET_REMOVE_INDEX_NO_CONNECTION_QR(idx);
@@ -522,7 +515,7 @@ export default {
         this.isConnected === false
       ) {
         alert(
-          "You have scanned persons offline please upload them first because we detected that have slow / no internet connection."
+          "Please upload or Export Offline Scans first!",
         );
       } else {
         this.logout("/login");
@@ -630,6 +623,12 @@ export default {
       const now = moment();
       const nowString = now.format("YYYY-MM-DD");
       return `${randomString}-${nowString}.json`;
+    },
+    userSettingsClicked() {
+      this.$navigator.navigate("/settings", { clearHistory: true });
+    },
+    getAppVersion() {
+      this.getVersionName()
     },
   },
 };

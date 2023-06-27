@@ -6,6 +6,7 @@ const custom = getString('store')
 const initialState = () => {
   return {
     user: {},
+    appVersion: '---',
   }
 }
 
@@ -23,6 +24,10 @@ const mutations = {
     state.user = payload
     setString("user", JSON.stringify(payload));
   },
+  SET_APP_VERSION (state, payload) {
+    state.appVersion = payload
+    console.log(state.appVersion)
+  },
   RESET_LOGIN_STATE (state) {
     Object.assign(state, initialState())
   }
@@ -30,6 +35,7 @@ const mutations = {
 
 const getters = {
   user: state => state.user,
+  appVersion: state => state.appVersion,
 }
 
 const actions = {

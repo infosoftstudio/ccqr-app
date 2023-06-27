@@ -150,6 +150,18 @@ Page#blocked {
   background: #f68f4f;
 }
 
+.round-btn-no-bg {
+  border-radius:30;
+  margin-left: 10%;
+  margin-right: 10%;
+  z-index: 1;
+  color: white;
+  font-size: 20rem;
+  font-weight: bold;
+  background: #ffffff00;
+  border: solid 2px #f68f4f;
+}
+
 .view-vax-pic {
   border-radius:30;
   margin-left: 10%;

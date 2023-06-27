@@ -2,7 +2,7 @@ import { Feedback, FeedbackType, FeedbackPosition } from "nativescript-feedback"
 import { Color } from "@nativescript/core/color"
 import { mapMutations } from 'vuex'
 import * as fs from "@nativescript/core/file-system"
-
+import * as appversion from "@nativescript/appversion";
 const audio = require('nativescript-audio');
 import {
     clear
@@ -12,6 +12,7 @@ export default {
     methods: {
         ...mapMutations('login', ['RESET_LOGIN_STATE']),
         ...mapMutations('scanned', ['RESET_SCANNED_STATE']),
+        ...mapMutations('user', ['SET_APP_VERSION']),
         snackBar (icon, title, message, color_ = "#e6494b") {
             this.feedback = new Feedback();
 
@@ -111,6 +112,15 @@ export default {
             if(entArray.length > 0) {
                 console.log('ents:',entArray)
             }
+        },
+        async getVersionName() {
+          // appversion.getVersionName().then(v => {
+          //   console.log("Your app's version is: " + v);
+          //   return v
+          // });
+
+          const version = await appversion.getVersionName()
+          this.SET_APP_VERSION(version)
         }
     }
 }

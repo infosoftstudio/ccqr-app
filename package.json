@@ -39,6 +39,7 @@
   "dependencies": {
     "@nativescript-community/ui-material-cardview": "^7.0.26",
     "@nativescript-community/ui-material-floatingactionbutton": "^7.0.28",
+    "@nativescript/appversion": "^2.0.0",
     "@nativescript/core": "~8.3.4",
     "@nativescript/theme": "~3.0.1",
     "axios": "^0.24.0",

@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import login from './modules/login'
 import scanned from './modules/scanned'
 import connection from './modules/connection'
+import user from './modules/user'
 
 // import NSVuexPersist from 'ns-vuex-persist'
 
@@ -13,7 +14,8 @@ export default new Vuex.Store({
     modules: {
         login,
         scanned,
-        connection
+        connection,
+        user,
     },
     // plugins: [NSVuexPersist]
 });
