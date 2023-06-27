@@ -27,6 +27,7 @@ const mutations = {
   },
   REMOVE_OFFLINE_SCANS(state, payload) {
       state.offlineScans = []
+      setString("offlineScans", JSON.stringify([]));
   },
   LOAD_NO_CONNECTION_QR (state, payload) {
       const offlineScans = getString('offlineScans') // offlineScans from app settings

@@ -12,15 +12,6 @@
             text="Logout"
             style="color: white;"
           />
-          <MDFloatingActionButton
-            @tap="exportOfflineScanClicked()"
-            top="60"
-            left="240"
-            rippleColor="#d79a73"
-            backgroundColor="#f68f4f"
-            text="Export"
-            style="color: white;"
-          />
           <!-- <MDFloatingActionButton
             @tap="onLogoutClick()"
             top="60"
@@ -75,6 +66,13 @@
         <DockLayout stretchLastChild="true" backgroundColor="#307f82">
           <Image dock="right" class="item-icon" src="~/assets/images/entrance.png" stretch="aspectFit"/>
           <Label dock="left" text="Scan RT-PCR" width="70%" height="40%" />
+        </DockLayout>
+      </MDCardView>
+
+      <MDCardView elevation="5" height="10%" @tap="exportOfflineScanClicked()" class="dashboard-item" v-if="offlineScans.length > 0">
+        <DockLayout stretchLastChild="true" backgroundColor="#2abfc4">
+          <Image dock="right" class="item-icon" src="~/assets/images/logs.png" stretch="aspectFit"/>
+          <Label dock="left" :text="`Download offline scans: ${offlineScans.length}`" width="70%" height="40%" />
         </DockLayout>
       </MDCardView>
 
@@ -203,6 +201,7 @@ export default {
       "SET_ADDITIONAL_NO_CONNECTION_QR",
       "LOAD_NO_CONNECTION_QR",
       "SET_REMOVE_INDEX_NO_CONNECTION_QR",
+      "REMOVE_OFFLINE_SCANS",
     ]),
     hdf_scan(initial) {
       /*const pathToBeep = fs.path.join(fs.knownFolders.currentApp().path,  initial ? 'audio/hdf-verify.mp3' : 'audio/hdf-duplicate.mp3');
@@ -455,7 +454,7 @@ export default {
             ) {
               this.onlyonce += 1;
               if (this.onlyonce === 1) {
-                this.calledIfHasNet();
+                // this.calledIfHasNet();
               }
             }
             break;
@@ -469,7 +468,7 @@ export default {
             ) {
               this.onlyonce += 1;
               if (this.onlyonce === 1) {
-                this.calledIfHasNet();
+                // this.calledIfHasNet();
               }
             }
             break;
@@ -577,10 +576,8 @@ export default {
             "Please allow permission to export."
           );
         });
-
-      console.log(123123123, permissions);
     },
-    exportScans() {
+    async exportScans() {
       const fileSystemModule = require("@nativescript/core/file-system");
 
       // Get the downloads folder path
@@ -589,31 +586,50 @@ export default {
           android.os.Environment.DIRECTORY_DOWNLOADS
         ).toString();
 
-      // Create a new file in the downloads folder
-      const qrcode = this.user.establishment.qr_code;
+      const fileName = await this.generateFileName();
 
-      //   const fileName = qrcode + "-offline-scans.csv";
-      const fileName = qrcode + "_offline_scan.csv";
-      //   const fileName = `${qrcode}-offline-scans.csv`;
       const filePath = fileSystemModule.path.join(downloadsFolder, fileName);
       const file = fileSystemModule.File.fromPath(filePath);
 
       // Write some text to the file
-      const fileText = "Hello, World";
+      const fileText = await this.offlineScans;
+      const stringified = await JSON.stringify(fileText);
+
+      console.log(123123, stringified);
+
       file
-        .writeText(fileText)
+        .writeText(stringified)
         .then(() => {
-          console.log(`File ${fileName} saved in Downloads folder.`);
           this.snackBar(
             "export_file",
             "Exported",
             fileName + " saved on Downloads folder",
             "#2abfc4"
           );
+
+          setTimeout(() => {
+            this.REMOVE_OFFLINE_SCANS();
+            this.SET_MAX_ITEM(0);
+            this.SET_COUNT_ITEM(0);
+          }, 50);
         })
         .catch((err) => {
           this.snackBar("error", "Error saving file", err);
         });
+    },
+    async doShareImage() {
+      const imageSrc = await ImageSource.fromUrl(
+        "https://thiscatdoesnotexist.com/"
+      );
+      shareImage(imageSrc);
+    },
+    generateFileName() {
+      const randomString = Math.random().toString(36).substring(2, 14);
+      // const qrcode = this.user.establishment.qr_code;
+
+      const now = moment();
+      const nowString = now.format("YYYY-MM-DD");
+      return `${randomString}-${nowString}.json`;
     },
   },
 };
