@@ -12,7 +12,7 @@ export default {
     methods: {
         ...mapMutations('login', ['RESET_LOGIN_STATE']),
         ...mapMutations('scanned', ['RESET_SCANNED_STATE']),
-        snackBar (icon, title, message) {
+        snackBar (icon, title, message, color_ = "#e6494b") {
             this.feedback = new Feedback();
 
             this.feedback.show({
@@ -23,7 +23,7 @@ export default {
                 message: message,
                 messageColor: new Color("white"),
                 duration: 3000,
-                backgroundColor: new Color("#e6494b"),
+                backgroundColor: new Color(color_),
                 icon: icon, // in App_Resources/platform folders
                 android: {
                     iconColor: new Color("white") // optional, leave out if you don't need it
