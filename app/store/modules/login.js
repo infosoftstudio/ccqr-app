@@ -37,7 +37,10 @@ const getters = {
 const actions = {
   LOGIN_USER ({ commit }, payload) { // login user
       return axiospostApi('loginMobile', payload)
-  }
+  },
+  CHANGE_PASSWORD ({ commit }, payload) { // login user
+      return axiospostApi('mobile-app/change-password', payload)
+  },
 }
 
 export default {

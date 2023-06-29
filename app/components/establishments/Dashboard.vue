@@ -1,5 +1,9 @@
 <template>
-  <Page @loaded="oneGlance(), getAppVersion()" actionBarHidden="true">
+  <Page
+      @loaded="oneGlance(), getAppVersion()"
+      actionBarHidden="true"
+      xmlns:mdf="@nativescript-community/ui-material-floatingactionbutton"
+  >
     <StackLayout>
       <MDCardView elevation="5" height="25%" class="dashboard-item image">
         <AbsoluteLayout backgroundColor="#3c495e">
@@ -7,14 +11,11 @@
           <!-- @tap="onLogoutClick()" -->
           <MDFloatingActionButton
             @tap="userSettingsClicked()"
-            left="240"
+            left="270"
             rippleColor="#d79a73"
-            backgroundColor="#f68f4f"
-            text="Settings"
-            style="color: white;"
-          >
-            <Image dock="right" class="item-icon" src="~/assets/images/entrance.png" stretch="aspectFit"/>
-          </MDFloatingActionButton>
+            backgroundColor="#7f7f7f"
+            src="~/assets/images/settings.png"
+          />
           <!-- <Button
             v-if="appVersion < dbVersion"
             top="80" left="10"
@@ -114,9 +115,7 @@ import { openUrl } from "@nativescript/core/utils/utils";
 // import connectivityModule from '@nativescript/core/connectivity'
 import {
   connectionType,
-  getConnectionType,
   startMonitoring,
-  stopMonitoring,
 } from "@nativescript/core/connectivity";
 
 import Globals from "../../mixins/globals";
@@ -425,6 +424,7 @@ export default {
     monitorNetworkStart() {
       this.networkStatus = "Monitoring network connection changes.";
       startMonitoring((newConnectionType) => {
+        console.log(123, newConnectionType)
         switch (newConnectionType) {
           case connectionType.none:
             console.log("Connection type changed to none.");
@@ -447,7 +447,7 @@ export default {
             ) {
               this.onlyonce += 1;
               if (this.onlyonce === 1) {
-                // this.calledIfHasNet();
+                this.calledIfHasNet();
               }
             }
             break;
@@ -461,7 +461,7 @@ export default {
             ) {
               this.onlyonce += 1;
               if (this.onlyonce === 1) {
-                // this.calledIfHasNet();
+                this.calledIfHasNet();
               }
             }
             break;
@@ -483,8 +483,7 @@ export default {
       if (!this._.isEmpty(this.offlineScans) && this.isConnected === true) {
         confirm({
           title: "Caution!",
-          message:
-            "Please upload or Export Offline Scans first!",
+          message: "Please upload or Export Offline Scans first!",
           okButtonText: "UPLOAD",
           cancelButtonText: "CANCEL",
         }).then((result) => {
@@ -514,9 +513,7 @@ export default {
         !this._.isEmpty(this.offlineScans) &&
         this.isConnected === false
       ) {
-        alert(
-          "Please upload or Export Offline Scans first!",
-        );
+        alert("Please upload or Export Offline Scans first!");
       } else {
         this.logout("/login");
       }
@@ -628,7 +625,7 @@ export default {
       this.$navigator.navigate("/settings", { clearHistory: true });
     },
     getAppVersion() {
-      this.getVersionName()
+      this.getVersionName();
     },
   },
 };
