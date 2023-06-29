@@ -8,7 +8,6 @@
       <MDCardView elevation="5" height="25%" class="dashboard-item image">
         <AbsoluteLayout backgroundColor="#3c495e">
           <Image top="0" src="~/assets/images/dashboard.png" height="100%" width="100%" stretch="fill"/>
-          <!-- @tap="onLogoutClick()" -->
           <MDFloatingActionButton
             @tap="userSettingsClicked()"
             left="270"
@@ -88,13 +87,13 @@
       <!-- <Button width="44%" class="hyperlink-camiguin" @tap="errorSound()"/> -->
 
       <BarcodeScanner
-          row="1"
-          height="300"
-          formats="QR_CODE, EAN_13, UPC_A"
-          beepOnScan="true"
-          reportDuplicates="true"
-          preferFrontCamera="false"
-          @scanResult="onScanResult"
+        row="1"
+        height="300"
+        formats="QR_CODE, EAN_13, UPC_A"
+        beepOnScan="true"
+        reportDuplicates="true"
+        preferFrontCamera="false"
+        @scanResult="onScanResult"
       </BarcodeScanner>
 
       <StackLayout height="100%" orientation="horizontal">
@@ -107,27 +106,17 @@
   </Page>
 </template>
 <script>
-// import appversion from 'nativescript-appversion'
 import { BarcodeScanner } from "nativescript-barcodescanner";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { openUrl } from "@nativescript/core/utils/utils";
-
-// import connectivityModule from '@nativescript/core/connectivity'
-import {
-  connectionType,
-  startMonitoring,
-} from "@nativescript/core/connectivity";
-
+import OfflineHelper from "~/mixins/offline-helper";
 import Globals from "../../mixins/globals";
 import ScannedPerson from "../establishments/scan/ScannedPerson";
 import Blocked from "../establishments/scan/Blocked";
 import ScannedRtpcr from "../establishments/scan/ScannedRtpcr";
 import ScannedHDF from "../establishments/scan/ScannedHDF";
-// import * as fs from "@nativescript/core/file-system";
-
 import moment from "moment";
 
-import UploadModalStatus from "./scan/UploadModalStatus";
 export default {
   data() {
     return {
@@ -159,12 +148,6 @@ export default {
     },
   },
   watch: {
-    hasConnection: {
-      handler() {
-        this.isConnected = this.hasConnection;
-      },
-      deep: true,
-    },
     close: {
       handler() {
         if (this.close === true) {
@@ -175,7 +158,7 @@ export default {
       deep: true,
     },
   },
-  mixins: [Globals],
+  mixins: [Globals, OfflineHelper],
   components: { ScannedPerson, Blocked, ScannedRtpcr, ScannedHDF },
   methods: {
     ...mapActions("scanned", ["LOG_SCANNED", "CREATE_ADD_LOG", "VERIFY_HDF"]),
@@ -210,9 +193,10 @@ export default {
     onScanResult(evt) {
       // console.log(`onScanResult: ${evt.text} (${evt.format})`);
     },
-    oneGlance() {
+    async oneGlance() {
       this.monitorNetworkStart();
       this.loadData();
+      await this.LOAD_USER();
     },
     tourScan() {
       // this.snackBar("facescan", 'Tours', 'Tours scan')
@@ -305,7 +289,7 @@ export default {
           }, 100);
         })
         .catch((data) => {
-          console.log(data);
+          // console.log(data);
         });
     },
     port_scan(is_rtpcr_scan) {
@@ -322,11 +306,11 @@ export default {
             beepOnScan: true,
             openSettingsIfPermissionWasPreviouslyDenied: true,
             closeCallback: () => {
-              console.log("Scanner closed @ " + new Date().getTime());
+              // console.log("Scanner closed @ " + new Date().getTime());
             },
           })
           .then((data) => {
-            console.log(is_rtpcr_scan);
+            // console.log(is_rtpcr_scan);
             setTimeout(() => {
               if (this.isConnected === true) {
                 if (is_rtpcr_scan)
@@ -383,143 +367,23 @@ export default {
           "Feature not available for offline use."
         );
     },
-    async loadData() {
-      await this.LOAD_USER();
-      await this.LOAD_NO_CONNECTION_QR();
-    },
     dummyItems() {
-      console.log("scanned");
+      // console.log("scanned");
       this.SET_ADDITIONAL_NO_CONNECTION_QR({
         qr: "CCQRQBNKMG",
         type: "entrance",
         time_scanned: moment().format(),
       });
     },
-    calledIfHasNet() {
-      this.SET_COUNT_ITEM(0);
-      this.totalItems = 0;
-      this.items = this.offlineScans;
-      this.logoutUploadingClick = 0; // to reset into 0 when connection successfully established
-      confirm({
-        title: "Upload scanned QR",
-        message:
-          "Click the Upload button to send your scanned QRs. Turn off mobile data or WiFi if this dialog message appears again.",
-        okButtonText: "Upload",
-        cancelButtonText: "Cancel",
-      }).then((result) => {
-        console.log(result);
-        if (result === true) {
-          // this.SET_MAX_ITEM(this.items.length)
-          // for (let idx in this.items) { // in is array index, of is object
-          //     this.LOG_SCANNED(this.items[idx]).then(data => {
-          //         this.totalItems += 1
-          //         this.SET_COUNT_ITEM(this.totalItems)
-          //         this.SET_REMOVE_INDEX_NO_CONNECTION_QR(idx)
-          //     })
-          // }
-          this.$showModal(UploadModalStatus);
-        }
-      });
-    },
-    monitorNetworkStart() {
-      this.networkStatus = "Monitoring network connection changes.";
-      startMonitoring((newConnectionType) => {
-        console.log(123, newConnectionType)
-        switch (newConnectionType) {
-          case connectionType.none:
-            console.log("Connection type changed to none.");
-            this.networkStatus = "Connection type changed to none.";
-            this.snackBar(
-              "error",
-              "Connection error",
-              "Could not connect to server."
-            );
-            this.SET_HASCONNECTION(false);
-            this.onlyonce = 0;
-            break;
-          case connectionType.wifi:
-            console.log("Connection type changed to WiFi.");
-            this.networkStatus = "Connection type changed to WiFi.";
-            this.SET_HASCONNECTION(true);
-            if (
-              !this._.isEmpty(this.offlineScans) &&
-              Object.entries(this.user).length !== 0
-            ) {
-              this.onlyonce += 1;
-              if (this.onlyonce === 1) {
-                this.calledIfHasNet();
-              }
-            }
-            break;
-          case connectionType.mobile:
-            console.log("Connection type changed to mobile.");
-            this.networkStatus = "Connection type changed to mobile.";
-            this.SET_HASCONNECTION(true);
-            if (
-              !this._.isEmpty(this.offlineScans) &&
-              Object.entries(this.user).length !== 0
-            ) {
-              this.onlyonce += 1;
-              if (this.onlyonce === 1) {
-                this.calledIfHasNet();
-              }
-            }
-            break;
-          default:
-            this.SET_HASCONNECTION(false);
-            this.onlyonce = 0;
-            break;
-        }
-      });
-    },
+
     camiguinLink() {
       openUrl("http://www.camiguin.gov.ph/");
     },
     infosoftLink() {
       openUrl("https://infosoftstudio.com/");
     },
-    onLogoutClick() {
-      console.log(this.user);
-      if (!this._.isEmpty(this.offlineScans) && this.isConnected === true) {
-        confirm({
-          title: "Caution!",
-          message: "Please upload or Export Offline Scans first!",
-          okButtonText: "UPLOAD",
-          cancelButtonText: "CANCEL",
-        }).then((result) => {
-          if (result) {
-            this.logoutUploadingClick += 1; // increament once click "ok"
-            if (this.logoutUploadingClick === 1) {
-              // to catch multiple click in logout // execute only once
-              for (let idx in this.items) {
-                this.LOG_SCANNED(this.items[idx]).then((data) => {
-                  if (this._.isEmpty(this.offlineScans)) {
-                    // to validate if emtpy na ang sa store
-                    this.logoutUploadingClick = 0; // to reset the only click once
-                    this.items = this.offlineScans; // to reset the items
-                    alert(
-                      "Offline scans are successfully uploaded! You can now log out safely"
-                    );
-                  }
-                  this.SET_REMOVE_INDEX_NO_CONNECTION_QR(idx);
-                });
-              }
-            }
-          } else {
-            this.logout("/login");
-          }
-        });
-      } else if (
-        !this._.isEmpty(this.offlineScans) &&
-        this.isConnected === false
-      ) {
-        alert("Please upload or Export Offline Scans first!");
-      } else {
-        this.logout("/login");
-      }
-    },
     test() {
-      console.log("offline scanssss:", this.offlineScans);
+      // console.log("offline scanssss:", this.offlineScans);
     },
     async version() {
       /*
@@ -555,11 +419,11 @@ export default {
           "Permission needed to save text file"
         )
         .then((eee) => {
-          console.log(eee);
-          this.exportScans();
+          // console.log(eee);
+          // this.exportScans();
         })
         .catch((eee) => {
-          console.error(eee);
+          // console.error(eee);
           this.snackBar(
             "permission",
             "Enable permission",
@@ -585,7 +449,7 @@ export default {
       const fileText = await this.offlineScans;
       const stringified = await JSON.stringify(fileText);
 
-      console.log(123123, stringified);
+      // console.log(123123, stringified);
 
       file
         .writeText(stringified)
