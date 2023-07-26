@@ -1,7 +1,6 @@
-import { axiosgetApi, axiospostApi, axiosdeleteApi } from '../../axioshttp'
+import { axiosgetApi, axiospostApi } from '../../axioshttp'
 
 import {getString, setString} from "@nativescript/core/application-settings"
-const custom = getString('store')
 
 const initialState = () => {
   return {

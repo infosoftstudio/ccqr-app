@@ -64,13 +64,21 @@
       />
 
       <Label
-        v-if="visitorChecker && !scannedperson.offline && scannedperson.visit_reservation[0] == 'green'"
+        v-if="
+          visitorChecker &&
+          !scannedperson.offline &&
+          scannedperson.visit_reservation[0] == 'green'
+        "
         class="visit-status-green"
         horizontalAlignment="center"
         :text="scannedperson.visit_reservation[1]"
       />
       <Label
-        v-if="visitorChecker && !scannedperson.offline && scannedperson.visit_reservation[0] == 'red'"
+        v-if="
+          visitorChecker &&
+          !scannedperson.offline &&
+          scannedperson.visit_reservation[0] == 'red'
+        "
         class="visit-status-red"
         horizontalAlignment="center"
         :text="scannedperson.visit_reservation[1]"
@@ -145,6 +153,33 @@
             class="info-content"
             :text="scannedperson.individual.address"
           />
+        </StackLayout>
+        <StackLayout
+          v-if="scannedperson.tour_reservation[0]"
+          horizontalAlignment="center"
+        >
+          <Label class="visit-status-green center-text" text="Visit reservations:" />
+
+          <ScrollView v-if="scannedperson.tour_reservation[0]" height="100">
+            <StackLayout height="100">
+              <ListView
+                :items="scannedperson.tour_reservation"
+                for="(item, index) in scannedperson.tour_reservation"
+                :key="index"
+              >
+                <v-template>
+                  <StackLayout
+                    orientation="horizontal"
+                    horizontalAlignment="center"
+                  >
+                    <Label class="info-label" :text="item.departure" />
+                    <Label :text="item.attendee" />
+                  </StackLayout>
+
+                </v-template>
+              </ListView>
+            </StackLayout>
+          </ScrollView>
         </StackLayout>
         <StackLayout
           v-if="!scannedperson.offline"

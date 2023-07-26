@@ -70,17 +70,10 @@
         </DockLayout>
       </MDCardView>
 
-      <!-- <MDCardView elevation="5" height="10%" @tap="test()" class="dashboard-item">
-        <DockLayout stretchLastChild="true" backgroundColor="#307f82">
-          <Image dock="right" class="item-icon" src="~/assets/images/entrance.png" stretch="aspectFit"/>
-          <Label dock="left" text="TESTING" width="70%" height="40%" />
-        </DockLayout>
-      </MDCardView> -->
-
-      <!-- <MDCardView elevation="5" height="10%" @tap="port_scan(false)" class="dashboard-item" v-if="user.role == 'port'">
-        <DockLayout stretchLastChild="true" backgroundColor="#0d3c3d">
-          <Image dock="right" class="item-icon" src="~/assets/images/exit.png" stretch="aspectFit"/>
-          <Label dock="left" text="Scan HDF" width="70%" height="40%" />
+      <!-- <MDCardView elevation="5" height="10%" @tap="checkTouristSpotReservation()" class="dashboard-item">
+        <DockLayout stretchLastChild="true" backgroundColor="#9c009b">
+          <Image dock="right" class="item-icon" src="~/assets/images/booking.png" stretch="aspectFit"/>
+          <Label dock="left" text='Check bookings' width="70%" height="40%" />
         </DockLayout>
       </MDCardView> -->
 
@@ -109,13 +102,14 @@
 import { BarcodeScanner } from "nativescript-barcodescanner";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { openUrl } from "@nativescript/core/utils/utils";
-import OfflineHelper from "~/mixins/offline-helper";
-import Globals from "../../mixins/globals";
-import ScannedPerson from "../establishments/scan/ScannedPerson";
+import * as application from "@nativescript/core/application";
 import Blocked from "../establishments/scan/Blocked";
-import ScannedRtpcr from "../establishments/scan/ScannedRtpcr";
-import ScannedHDF from "../establishments/scan/ScannedHDF";
+import Globals from "../../mixins/globals";
 import moment from "moment";
+import OfflineHelper from "~/mixins/offline-helper";
+import ScannedHDF from "../establishments/scan/ScannedHDF";
+import ScannedPerson from "../establishments/scan/ScannedPerson";
+import ScannedRtpcr from "../establishments/scan/ScannedRtpcr";
 
 export default {
   data() {
@@ -130,6 +124,35 @@ export default {
       logoutUploadingClick: 0,
       totalItems: 0,
     };
+  },
+  mounted() {
+    if (application.android) {
+      application.android.on(
+        application.AndroidApplication.activityBackPressedEvent,
+        (e) => {
+          // Handle back button press
+
+          // const frame = Frame.topmost();
+          // if (!frame || !frame.canGoBack()) {
+            // Show exit dialog
+            // confirm({
+            //     title: "You are about to close the application",
+            //     message: "",
+            //     okButtonText: "CLOSE APP",
+            //     cancelButtonText: "CANCEL"
+            // }).then((result) => {
+            //   if (result) {
+            //     // User tapped Yes, exit app
+            //     e.cancel = false;
+            //   } else {
+            //     // User tapped No, cancel exit
+            //     e.cancel = true;
+            //   }
+            // });
+          // }
+        }
+      );
+    }
   },
   computed: {
     ...mapGetters("login", ["user"]),
@@ -406,6 +429,10 @@ export default {
     },
     exportOfflineScanClicked() {
       this.checkPermission();
+    },
+    checkTouristSpotReservation() {
+      this.$navigator.navigate("/tours");
+      // this.$navigator.navigate("/tours", { clearHistory: true });
     },
     checkPermission() {
       const permissions = require("nativescript-permissions");
